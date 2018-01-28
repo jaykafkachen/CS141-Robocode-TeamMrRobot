@@ -5,9 +5,9 @@ import robocode.*;
 // API help : http://robocode.sourceforge.net/docs/robocode/robocode/Robot.html
 
 /**
- * Mrrobot - a robot by (your name here)
+ * MrRobot - a robot by Jay Chen and Tyler Stamp 
  */
-public class Mrrobot extends Robot
+public class MrRobot extends Robot
 {
 	/**
 	 * run: Mrrobot's default behavior
