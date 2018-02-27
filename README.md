@@ -7,4 +7,3 @@ To Do: //comment on whatever you think you can help with most
     --Includes tracking when a bullet has been fired by opponent and how many enemies are on the field
 2. Shooting/Attacking - controls gun and melee tactics
 3. Moving/Dodging - movement algorithm based on minimum risk movement //JAY can handle this
-    --Includes tracking own position on battlefield - part of Sensing code likely (onScannedRobot method)
