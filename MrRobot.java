@@ -1,5 +1,4 @@
 package TeamMrRobot;
-package testing;
 import robocode.*;
 import robocode.util.Utils.*;
 import java.util.*;
