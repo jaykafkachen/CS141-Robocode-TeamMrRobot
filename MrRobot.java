@@ -86,7 +86,7 @@ public class Testbot extends AdvancedRobot
        double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
 		Point2D enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
 		Enemy en = new Enemy(enemyLoc, e.getEnergy());
-		enemies.put(name, enemyLoc); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
+		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
 	}
 	
 	public void onRobotDeath(RobotDeathEvent e)
