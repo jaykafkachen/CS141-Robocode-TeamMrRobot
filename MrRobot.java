@@ -8,14 +8,14 @@ import java.awt.*;
 public class Testbot extends AdvancedRobot
 {
 	static Point2D location, last;
-	static Hashtable<String, Point2D> enemies;
+	static Hashtable<String, Enemy> enemies;
 	static final double MAXRADS = Math.PI*2;
 	
 	public void run()
 	{
 		setTurnRadarRight(Double.POSITIVE_INFINITY);
 		setColors(Color.black, Color.red, Color.red);
-		enemies = new Hashtable<String, Point2D>(); //will store Key String enemy name, Value Point2d enemy location		
+		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
 		Point2D next = null;
 
 		do
@@ -64,9 +64,9 @@ public class Testbot extends AdvancedRobot
 		riskVal *= enemies.size(); //higher risk when more enemies on field
 		if(enemies.size()<=2) //if there are few enemies on field/one-on-one, start prioritizing melee
 		{
-			for (Point2D enemyLoc : enemies.values()) //loop through and find if there is an enemy closer than the point given, will be fast bc 2 or less enemies only
+			for (Enemy enemyLoc : enemies.values()) //loop through and find if there is an enemy closer than the point given, will be fast bc 2 or less enemies only
 			{
-    			if(location.distance(closest)>location.distance(enemyLoc))
+    			if(location.distance(closest)>location.distance(enemyLoc.getE()))
 					closest = enemyLoc;
 			}
 			if(!closest.equals(point))
