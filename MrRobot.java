@@ -83,7 +83,7 @@ public class Testbot extends AdvancedRobot
 	{
 		String name = e.getName();
 		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-       double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+       		double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
 		Point2D enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
 		Enemy en = new Enemy(enemyLoc, e.getEnergy());
 		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
@@ -93,7 +93,13 @@ public class Testbot extends AdvancedRobot
 	{
 		enemies.remove(e.getName());
 	}
-	
+	public double fire(double fire)
+	{
+	//we need to decide when we want the robot to shoot, I'll put some filler code in for now
+	//I used the setFire() based on enemy location but we can also use if-else if-else statement or combination of both if needed
+		setFire(300/e.getDistance()); //bullet damage is smaller when the enemy is further away. It gets higher as the enemy gets closer
+					      //any damage number higher than 3 automatically caps at 3 anyway, lowest number caps at 0.1
+	}
 /*
  * This helper method uses code from Kawigi, which is released under the terms of the KPL.
  * http://robowiki.net/wiki/Coriantumr
