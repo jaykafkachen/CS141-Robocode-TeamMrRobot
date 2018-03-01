@@ -9,6 +9,7 @@ public class Testbot extends AdvancedRobot
 {
 	static Point2D location, last;
 	static Hashtable<String, Enemy> enemies;
+	static Enemy target;
 	static final double MAXRADS = Math.PI*2;
 	
 	public void run()
