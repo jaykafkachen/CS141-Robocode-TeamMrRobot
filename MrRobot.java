@@ -37,7 +37,7 @@ public class Testbot extends AdvancedRobot
 			} while(moveAngle < MAXRADS);
 			if (changed)
 				last = location;
-			double turn = angle(next, location)-getHeadingRadians(); //nullPointer here, will be fixed when risk() method written
+			double turn = angle(next, location)-getHeadingRadians(); //nullPointer here
 			if (Math.cos(turn) < 0)
 			{
 				turn += Math.PI;
@@ -56,7 +56,27 @@ public class Testbot extends AdvancedRobot
 	
 	public double risk(Point2D point)
 	{
-		return 0;	
+		double riskVal = .05*location.distance(point); //greater risk at further away, zero risk when point given is current location
+		double hp = getEnergy();
+		if(hp<50 && (point.getX()<=0 || point.getY()<=0 || point.getX()>=getBattleFieldWidth() || point.getY()>=getBattleFieldHeight()))
+			return 100; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
+		Point2D closest = point; //assume the point given is of highest priority
+		riskVal *= enemies.size(); //higher risk when more enemies on field
+		if(enemies.size()<=2) //if there are few enemies on field/one-on-one, start prioritizing melee
+		{
+			for (Point2D enemyLoc : enemies.values()) //loop through and find if there is an enemy closer than the point given, will be fast bc 2 or less enemies only
+			{
+    			if(location.distance(closest)>location.distance(enemyLoc))
+					closest = enemyLoc;
+			}
+			if(!closest.equals(point))
+				riskVal -= .05*location.distance(closest); //subtract the distance of the closest robot because we WANT to move there if melee'ing
+		}
+		else
+		{
+		
+		}
+		return riskVal;	
 	}
 	
 	public void onScannedRobot(ScannedRobotEvent e)
@@ -65,7 +85,8 @@ public class Testbot extends AdvancedRobot
 		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
        double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
 		Point2D enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
-		enemies.put(name, enemyLoc); //note here that put() will replace the previous enemy location if the enemy is already in the hashmap
+		Enemy en = new Enemy(enemyLoc, e.getEnergy());
+		enemies.put(name, enemyLoc); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
 	}
 	
 	public void onRobotDeath(RobotDeathEvent e)
@@ -94,5 +115,29 @@ public class Testbot extends AdvancedRobot
 	public static double angle(Point2D point1, Point2D point2) 
 	{
 		return Math.atan2(point1.getX()-point2.getX(), point1.getY()-point2.getY()); 
+	}
+	
+	public class Enemy //nested class to store enemy energy and location for reference in risk() method
+	{
+		private Point2D loc;
+		private double energy;
+		
+		public Enemy(Point2D l, double e)
+		{
+			loc = l;
+			energy = e;
+		} 
+		
+		public void setE(double e)
+		{ energy = e;}
+		
+		public void setLoc(Point2D l)
+		{ loc = l;}
+		
+		public double getE()
+		{ return energy;}
+		
+		public Point2D getLoc()
+		{ return loc;}
 	}
 }
