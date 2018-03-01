@@ -99,6 +99,12 @@ public class Testbot extends AdvancedRobot
 	//I used the setFire() based on enemy location but we can also use if-else if-else statement or combination of both if needed
 		setFire(300/e.getDistance()); //bullet damage is smaller when the enemy is further away. It gets higher as the enemy gets closer
 					      //any damage number higher than 3 automatically caps at 3 anyway, lowest number caps at 0.1
+		//if(loc<200)
+		//	setFire(0.5);
+		//else if(loc<100)
+		//	setFire(1.5);
+		//else
+		//	setFire(0.1);
 	}
 /*
  * This helper method uses code from Kawigi, which is released under the terms of the KPL.
