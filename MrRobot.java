@@ -47,7 +47,7 @@ public class Name extends AdvancedRobot
 				distance = -distance;
 			}
 			setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(turn));						
-			if(Math.abs(getTurnRemainingRadians()) > 1)
+			if(Math.abs(getTurnRemainingRadians()) > 1 && getGunHeat()==0) //we will waste a turn if the gun goes off when gun heat is not zero
 			{
 				setFire(1); //setAhead(0);
 			}
