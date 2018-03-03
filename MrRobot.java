@@ -1,11 +1,11 @@
-package testing;
+package TeamMrRobot;
 import robocode.*;
 import robocode.util.*;
 import java.util.*;
 import java.awt.geom.*;
 import java.awt.*;
 
-public class Testbot extends AdvancedRobot
+public class MrRobot extends AdvancedRobot
 {
 	static Point2D location, last;
 	static Hashtable<String, Enemy> enemies;
