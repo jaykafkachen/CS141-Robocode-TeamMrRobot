@@ -1,11 +1,11 @@
-package FUCK;
+package Name;
 import robocode.*;
 import robocode.util.*;
 import java.util.*;
 import java.awt.geom.*;
 import java.awt.*;
 
-public class FUCK extends AdvancedRobot
+public class Name extends AdvancedRobot
 {
 	static Point2D.Double location, next;
 	static Hashtable<String, Enemy> enemies;
