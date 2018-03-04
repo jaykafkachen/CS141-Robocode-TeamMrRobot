@@ -115,7 +115,7 @@ public class Name extends AdvancedRobot
 			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
 			if(enemyX>200 || enemyY>200)
 				setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
-			else
+			else //"Linear targeting, shoots based on the assumption that the enemy will continue moving in the same direction it is currently going
 			{	
 				while((++deltaTime) * (20.0 - 3.0 * bulletPower) < Point2D.Double.distance(myX, myY, predictedX, predictedY)){		
 					predictedX += Math.sin(enemyHeading) * enemyVelocity;
