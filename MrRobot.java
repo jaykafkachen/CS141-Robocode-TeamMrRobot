@@ -19,8 +19,8 @@ public class Name extends AdvancedRobot
 		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
 		target = null;
 		location = new Point2D.Double(getX(), getY());	
-		double moveAngle, distance;
-		moveAngle = distance = 0.0;
+		double moveAngle, distance, turn;
+		moveAngle = distance = turn = 0.0;
 		do
 		{			
 			if(next == null)
@@ -32,7 +32,7 @@ public class Name extends AdvancedRobot
 				if(target!=null)
 				{
 					distance = location.distance(target.getLoc()); //distance to target
-					pt = projectPoint(location, moveAngle, Math.max(distance/2, 300));
+					pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
 					if (area.contains(pt) && risk(pt)<risk(next))//find the risk of different points, if there's a good new point, then move there
 					{
 						next = pt; //next equals calculated risk next point
@@ -40,7 +40,7 @@ public class Name extends AdvancedRobot
 				}
 				moveAngle += 1;
 			} while(moveAngle < MAXRADS);
-			double turn = angle(next, location)-getHeadingRadians(); 
+			turn = angle(next, location)-getHeadingRadians(); 
 			if (Math.cos(turn) < 0)
 			{
 				turn += Math.PI;
@@ -59,7 +59,7 @@ public class Name extends AdvancedRobot
 	
 	public double risk(Point2D.Double point)
 	{
-		double riskVal = .05*location.distance(point); //greater risk at further away, zero risk when point given is current location
+		double riskVal = location.distance(point); //greater risk at further away, zero risk when point given is current location
 		if(getEnergy()<50 && (point.getX()<=0 || point.getY()<=0 || point.getX()>=getBattleFieldWidth() || point.getY()>=getBattleFieldHeight()))
 			return 100; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
 		Enemy closest = null; 
@@ -71,12 +71,13 @@ public class Name extends AdvancedRobot
 				{
 					closest = enemyLoc; //set this enemy to be the closest
 					riskPoint = enemyLoc.getLoc();
+					target = closest;
 				}
 			}
 			if(!riskPoint.equals(point)) //if the closest enemy is not the current point projected
 			{
-				riskVal -= .5*location.distance(closest.getLoc()); //subtract the distance of the closest robot because we WANT to move there if melee'ing
-				riskVal = Math.max(riskVal, 10);
+				riskVal -= location.distance(closest.getLoc()); //subtract the distance of the closest robot because we WANT to move there if melee'ing
+				riskVal = Math.max(riskVal, 50);
 			}	
 		return riskVal;	
 	}
@@ -91,7 +92,6 @@ public class Name extends AdvancedRobot
 		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
 			target = en;
 		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
- 		setTurnRadarRightRadians(Utils.normalRelativeAngle(turn));
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
