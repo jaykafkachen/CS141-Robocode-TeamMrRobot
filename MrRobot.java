@@ -103,6 +103,7 @@ public class Name extends AdvancedRobot
 		if(en.equals(target))
 		{
 			//do something to target enemy here
+			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
 			double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
 			setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
 		}
