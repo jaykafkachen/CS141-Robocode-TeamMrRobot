@@ -25,7 +25,7 @@ public class Name extends AdvancedRobot
 		{			
 			if(next == null)
 				next = location;
-			Rectangle2D.Double area  = new Rectangle2D.Double(40, 40, getBattleFieldWidth()-10, getBattleFieldHeight()-10);
+			Rectangle2D.Double area  = new Rectangle2D.Double(100, 100, getBattleFieldWidth()-10, getBattleFieldHeight()-10);
 			Point2D.Double pt = null;
 			do
 			{
