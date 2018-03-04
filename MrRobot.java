@@ -14,7 +14,6 @@ public class Name extends AdvancedRobot
 	
 	public void run()
 	{
-		setTurnRadarRight(Double.POSITIVE_INFINITY);
 		setColors(Color.black, Color.red, Color.red);
 		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
 		target = null;
@@ -22,7 +21,8 @@ public class Name extends AdvancedRobot
 		double moveAngle, distance, turn;
 		moveAngle = distance = turn = 0.0;
 		do
-		{			
+		{
+			setTurnRadarRight(360);			
 			if(next == null)
 				next = location;
 			Rectangle2D.Double area  = new Rectangle2D.Double(getX(), getY(), getBattleFieldWidth()-50, getBattleFieldHeight()-50);
@@ -31,7 +31,7 @@ public class Name extends AdvancedRobot
 			{
 				if(target!=null)
 				{
-					distance = location.distance(target.getLoc()); //distance to target
+					distance = Math.sqrt(location.distance(target.getLoc())); //distance to target
 					pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
 					if(pt.getX()<=10)
 						pt.setLocation(30, pt.getY());
@@ -127,7 +127,8 @@ public class Name extends AdvancedRobot
 						break;
 					}
 				}
-			double theta = Utils.normalAbsoluteAngle(Math.atan2(predictedX - getX(), predictedY - getY()));
+			Point2D.Double predicted = new Point2D.Double(predictedX, predictedY);
+			double theta = Utils.normalAbsoluteAngle(angle(predicted, location));
  			setTurnRadarRightRadians(Utils.normalRelativeAngle(absoluteBearing - getRadarHeadingRadians()));
 			setTurnGunRightRadians(Utils.normalRelativeAngle(theta - getGunHeadingRadians()));
 			fire(bulletPower);
