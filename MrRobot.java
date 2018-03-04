@@ -70,7 +70,7 @@ public class Name extends AdvancedRobot
 		double riskVal = 1;//location.distance(point); //greater risk at further away, zero risk when point given is current location
 		if(getEnergy()<50 && (point.getX()<=10 || point.getY()<=10 || point.getX()>=getBattleFieldWidth()-10 || point.getY()>=getBattleFieldHeight()-10))
 			return 1000; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
-		Enemy closest = null; 
+		Enemy closest = target; 
 		Point2D.Double riskPoint = point;
 		riskVal *= enemies.size(); //higher risk when more enemies on field
 			for (Enemy enemyLoc : enemies.values()) //loop through and find if there is an enemy closer than the point given, will be fast bc 2 or less enemies only
@@ -82,11 +82,9 @@ public class Name extends AdvancedRobot
 					target = closest;
 				}
 			}
-			if(!riskPoint.equals(point)) //if the closest enemy is not the current point projected
-			{
-				riskVal -= location.distance(closest.getLoc()); //subtract the distance of the closest robot because we WANT to move there if melee'ing
-				riskVal = Math.min(riskVal, 40);
-			}	
+			riskVal -= location.distance(closest.getLoc()); //subtract the distance of the closest robot because we WANT to move there if melee'ing
+			//if(!riskPoint.equals(point)) //if the closest enemy is not the current point projected
+			riskVal = Math.min(riskVal, 10);
 		return riskVal;	
 	}
 	
