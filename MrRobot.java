@@ -25,7 +25,7 @@ public class Name extends AdvancedRobot
 		{			
 			if(next == null)
 				next = location;
-			Rectangle2D.Double area  = new Rectangle2D.Double(100, 100, getBattleFieldWidth()-10, getBattleFieldHeight()-10);
+			Rectangle2D.Double area  = new Rectangle2D.Double(getX(), getY(), getBattleFieldWidth()-50, getBattleFieldHeight()-50);
 			Point2D.Double pt = null;
 			do
 			{
@@ -33,6 +33,14 @@ public class Name extends AdvancedRobot
 				{
 					distance = location.distance(target.getLoc()); //distance to target
 					pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
+					if(pt.getX()<=10)
+						pt.setLocation(30, pt.getY());
+					else if(pt.getX()>=getBattleFieldWidth()-10)
+						pt.setLocation(pt.getX()-20, pt.getY());
+					if(pt.getY()<=10)
+						pt.setLocation(pt.getY(), 30);
+					else if(pt.getY()>=getBattleFieldHeight()-10)
+						pt.setLocation(pt.getX(), pt.getY()-20);
 					if (area.contains(pt) && risk(pt)<risk(next))//find the risk of different points, if there's a good new point, then move there
 					{
 						next = pt; //next equals calculated risk next point
