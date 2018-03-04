@@ -90,21 +90,8 @@ public class Name extends AdvancedRobot
 	public void onScannedRobot(ScannedRobotEvent e)
 	{
 		String name = e.getName();
-		
-		double bulletPower = Math.min(3.0,getEnergy());
-		double myX = getX();
-		double myY = getY();
-		double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
-		
 		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
        		double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-		
-		double enemyHeading = e.getHeadingRadians();
-		double enemyVelocity = e.getVelocity();
-		double deltaTime = 0;
-		double battleFieldHeight = getBattleFieldHeight(), battleFieldWidth = getBattleFieldWidth();
-		double predictedX = enemyX, predictedY = enemyY; 
-		
 		Point2D.Double enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
 		Enemy en = new Enemy(enemyLoc, e.getEnergy());
 		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
@@ -113,26 +100,8 @@ public class Name extends AdvancedRobot
 		if(en.equals(target))
 		{
 			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
-			if(enemyX>200 || enemyY>200)
-				setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
-			else //"Linear targeting, shoots based on the assumption that the enemy will continue moving in the same direction it is currently going
-			{	
-				while((++deltaTime) * (20.0 - 3.0 * bulletPower) < Point2D.Double.distance(myX, myY, predictedX, predictedY)){		
-					predictedX += Math.sin(enemyHeading) * enemyVelocity;
-					predictedY += Math.cos(enemyHeading) * enemyVelocity;
-					if(	predictedX < 18.0 || predictedY < 18.0 || predictedX > battleFieldWidth - 18.0 || predictedY > battleFieldHeight - 18.0)
-					{
- 						predictedX = Math.min(Math.max(18.0, predictedX), battleFieldWidth - 18.0);	
-						predictedY = Math.min(Math.max(18.0, predictedY), battleFieldHeight - 18.0);
-						break;
-					}
-				}
-			Point2D.Double predicted = new Point2D.Double(predictedX, predictedY);
-			double theta = Utils.normalAbsoluteAngle(angle(predicted, location));
- 			setTurnRadarRightRadians(Utils.normalRelativeAngle(absoluteBearing - getRadarHeadingRadians()));
-			setTurnGunRightRadians(Utils.normalRelativeAngle(theta - getGunHeadingRadians()));
-			fire(bulletPower);
-			}
+			setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
+			double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
 		}
 	}
 	
