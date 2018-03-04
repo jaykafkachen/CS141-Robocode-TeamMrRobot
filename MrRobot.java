@@ -68,7 +68,7 @@ public class Name extends AdvancedRobot
 	public double risk(Point2D.Double point)
 	{
 		double riskVal = 1;//location.distance(point); //greater risk at further away, zero risk when point given is current location
-		if(getEnergy()<50 && (point.getX()<=0 || point.getY()<=0 || point.getX()>=getBattleFieldWidth() || point.getY()>=getBattleFieldHeight()))
+		if(getEnergy()<50 && (point.getX()<=10 || point.getY()<=10 || point.getX()>=getBattleFieldWidth()-10 || point.getY()>=getBattleFieldHeight()-10))
 			return 1000; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
 		Enemy closest = null; 
 		Point2D.Double riskPoint = point;
