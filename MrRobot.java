@@ -10,6 +10,7 @@ public class Name extends AdvancedRobot
 	static Point2D.Double location, next;
 	static Hashtable<String, Enemy> enemies;
 	static Enemy target;
+	static double direction;
 	static final double MAXRADS = Math.PI*2;
 	
 	public void run()
@@ -24,6 +25,7 @@ public class Name extends AdvancedRobot
 			{
 				double moveAngle, distance, turn;
 				moveAngle = distance = turn = 0.0;			
+				direction = moveAngle;
 				if(next == null)
 					next = location;
                 do {
@@ -95,6 +97,14 @@ public class Name extends AdvancedRobot
 		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
 			target = en;
 		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
+		setTurnRight(e.getBearing() + 90);
+		double moveDirection = direction;
+		//helps avoid head on enemy targeting
+		if (getTime() % 20 == 0) 
+		{
+			moveDirection *= -1;
+			setAhead(150 * moveDirection);
+		}
 		if(en.equals(target))
 		{
 			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
