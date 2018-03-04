@@ -13,7 +13,7 @@ public class Name extends AdvancedRobot
 	static double direction;
 	static final double MAXRADS = Math.PI*2;
 	
-	public void run()
+		public void run()
 	{
 		setColors(Color.black, Color.red, Color.red);
 		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
@@ -32,13 +32,13 @@ public class Name extends AdvancedRobot
                         Rectangle2D.Double area  = new Rectangle2D.Double(30, 30, getBattleFieldWidth()-50, getBattleFieldHeight()-50);
                         distance = Math.sqrt(location.distance(target.getLoc())); //distance to target
                         Point2D.Double pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
-                        if(pt.getX()<=10)
+                        if(pt.getX()<=wallAvoid)
                             pt.setLocation(30, pt.getY());
-                        else if(pt.getX()>=getBattleFieldWidth()-10)
+                        else if(pt.getX()>=getBattleFieldWidth()-wallAvoid)
                             pt.setLocation(pt.getX()-20, pt.getY());
                         if(pt.getY()<=10)
-                            pt.setLocation(pt.getY(), 30);
-                        else if(pt.getY()>=getBattleFieldHeight()-10)
+                            pt.setLocation(pt.getY(), wallAvoid);
+                        else if(pt.getY()>=getBattleFieldHeight()-wallAvoid)
                             pt.setLocation(pt.getX(), pt.getY()-20);
                         if (area.contains(pt) && risk(pt)<=risk(next))//find the risk of different points, if there's a good new point, then move there
                         {
