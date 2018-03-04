@@ -70,7 +70,9 @@ public class Name extends AdvancedRobot
 		double riskVal = 1;//location.distance(point); //greater risk at further away, zero risk when point given is current location
 		if(getEnergy()<50 && (point.getX()<=10 || point.getY()<=10 || point.getX()>=getBattleFieldWidth()-10 || point.getY()>=getBattleFieldHeight()-10))
 			return 100000; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
-		//Enemy closest = target; 
+		if(point.equals(target.getLoc()))
+			return 0;
+		Enemy closest = new Enemy(new Point2D.Double(1000,1000), 100); 
 		double hp = target.getE();
 		Point2D.Double riskPoint = point;
 		riskVal *= enemies.size(); //higher risk when more enemies on field
@@ -78,12 +80,12 @@ public class Name extends AdvancedRobot
 			{
     			if(location.distance(riskPoint)>location.distance(enemyLoc.getLoc()) && enemyLoc.getE()<=hp) //if the last enemy's location is farther than the next enemy
 				{
-					target = enemyLoc;
+					closest = enemyLoc;
 					riskPoint = enemyLoc.getLoc();
-					hp = target.getE();
+					hp = closest.getE();
 				}
 			}
-			riskVal *= hp*location.distance(target.getLoc());
+			riskVal *= hp*location.distance(closest.getLoc());
 		return riskVal;	
 	}
 	
@@ -91,7 +93,7 @@ public class Name extends AdvancedRobot
 	{
 		String name = e.getName();
 		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-       		double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+       	double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
 		Point2D.Double enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
 		Enemy en = new Enemy(enemyLoc, e.getEnergy());
 		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
@@ -100,8 +102,8 @@ public class Name extends AdvancedRobot
 		if(en.equals(target))
 		{
 			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
-			setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
 			double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
+			setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
 		}
 	}
 	
