@@ -89,28 +89,27 @@ public class Name extends AdvancedRobot
 	
 	public void onScannedRobot(ScannedRobotEvent e)
 	{
-		String name = e.getName();
-		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-       	double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
-		Point2D.Double enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
-		Enemy en = new Enemy(enemyLoc, e.getEnergy());
-		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
-			target = en;
-		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
-		setTurnRight(e.getBearing() + 90);
-		double moveDirection = direction;
-		//helps avoid head on enemy targeting
-		if (getTime() % 20 == 0) 
-		{
-			moveDirection *= -1;
-			setAhead(150 * moveDirection);
+		//super tracker method from robowiki by CrazyBassoonist, http://robowiki.net/wiki/SuperTracker
+		double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
+		double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
+		double gunTurnAmt;//amount to turn our gun
+		setTurnRadarLeftRadians(getRadarTurnRemainingRadians());//lock on the radar
+		if(Math.random()>.9){
+			setMaxVelocity((12*Math.random())+12);//randomly change speed
 		}
-		if(en.equals(target))
-		{
-			//"Head-on" targeting, if an enemy is spotted, immediately shoot in that direction
-			double absoluteBearing = getHeadingRadians() + e.getBearingRadians();
-			setTurnGunRightRadians(robocode.util.Utils.normalRelativeAngle(absoluteBearing - getGunHeadingRadians()));
+		if (e.getDistance() > 150) {//if distance is greater than 150
+			gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/22);//amount to turn our gun, lead just a little bit
+			setTurnGunRightRadians(gunTurnAmt); //turn our gun
+			setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(absBearing-getHeadingRadians()+latVel/getVelocity()));//drive towards the enemies predicted future location
+			setAhead((e.getDistance() - 140)*moveDirection);//move forward
+			setFire(3);//fire
 		}
+		else{//if we are close enough...
+			gunTurnAmt = robocode.util.Utils.normalRelativeAngle(absBearing- getGunHeadingRadians()+latVel/15);//amount to turn our gun, lead just a little bit
+			setTurnGunRightRadians(gunTurnAmt);//turn our gun
+			setTurnLeft(-90-e.getBearing()); //turn perpendicular to the enemy
+			setAhead((e.getDistance() - 140)*moveDirection);//move forward
+			setFire(3);//fire
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
