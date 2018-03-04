@@ -1,11 +1,11 @@
-package name;
+package trstamp_siennachen;
 import robocode.*;
 import robocode.util.*;
 import java.util.*;
 import java.awt.geom.*;
 import java.awt.*;
 
-public class Name extends AdvancedRobot
+public class MrRobot extends AdvancedRobot
 {
 	static Point2D.Double location, next;
 	static Hashtable<String, Enemy> enemies;
@@ -13,8 +13,9 @@ public class Name extends AdvancedRobot
 	static final double MAXRADS = Math.PI*2;
 	int moveDirection = 1;
 	
-	public void run()
+public void run()
 	{
+		setTurnRadarRight(Double.POSITIVE_INFINITY);
 		setColors(Color.black, Color.red, Color.red);
 		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
 		target = null;
@@ -22,8 +23,7 @@ public class Name extends AdvancedRobot
 		double moveAngle, distance, turn;
 		moveAngle = distance = turn = 0.0;
 		do
-		{
-			setTurnRadarRight(360);			
+		{			
 			if(next == null)
 				next = location;
 			Rectangle2D.Double area  = new Rectangle2D.Double(getX(), getY(), getBattleFieldWidth()-50, getBattleFieldHeight()-50);
@@ -32,7 +32,7 @@ public class Name extends AdvancedRobot
 			{
 				if(target!=null)
 				{
-					distance = Math.sqrt(location.distance(target.getLoc())); //distance to target
+					distance = location.distance(target.getLoc()); //distance to target
 					pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
 					if(pt.getX()<=10)
 						pt.setLocation(30, pt.getY());
@@ -121,6 +121,13 @@ public class Name extends AdvancedRobot
 	{
 		double dir = getHeadingRadians()+e.getBearingRadians();	
 		next = projectPoint(location, dir+Math.PI/2, 100);
+		double turn = angle(next, location)-getHeadingRadians(); 
+		if (Math.cos(turn) < 0)
+			{
+				turn += Math.PI;
+			}
+			setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(turn));						
+			setAhead(50);
 	}
 	
 	public void onHitRobot(HitRobotEvent e)
