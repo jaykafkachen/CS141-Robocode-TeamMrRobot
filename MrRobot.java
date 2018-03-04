@@ -1,4 +1,4 @@
-package trstamp_siennachen_gburke;
+package name;
 import robocode.*;
 import robocode.util.*;
 import java.util.*;
@@ -10,60 +10,61 @@ public class Name extends AdvancedRobot
 	static Point2D.Double location, next;
 	static Hashtable<String, Enemy> enemies;
 	static Enemy target;
-	static double direction;
 	static final double MAXRADS = Math.PI*2;
 	int moveDirection = 1;
-	int wallAvoid = 30;
 	
-		public void run()
+	public void run()
 	{
 		setColors(Color.black, Color.red, Color.red);
 		enemies = new Hashtable<String, Enemy>(); //will store Key String enemy name, Value Enemy obj (enemy location + energy storage)		
 		target = null;
+		location = new Point2D.Double(getX(), getY());	
+		double moveAngle, distance, turn;
+		moveAngle = distance = turn = 0.0;
 		do
 		{
-			location = new Point2D.Double(getX(), getY());	
-			if(target!=null)
+			setTurnRadarRight(360);			
+			if(next == null)
+				next = location;
+			Rectangle2D.Double area  = new Rectangle2D.Double(getX(), getY(), getBattleFieldWidth()-50, getBattleFieldHeight()-50);
+			Point2D.Double pt = null;
+			do
 			{
-				double moveAngle, distance, turn;
-				moveAngle = distance = turn = 0.0;			
-				direction = moveAngle;
-				if(next == null)
-					next = location;
-                do {
-                        Rectangle2D.Double area  = new Rectangle2D.Double(30, 30, getBattleFieldWidth()-50, getBattleFieldHeight()-50);
-                        distance = Math.sqrt(location.distance(target.getLoc())); //distance to target
-                        Point2D.Double pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
-                        if(pt.getX()<=wallAvoid)
-                            pt.setLocation(30, pt.getY());
-                        else if(pt.getX()>=getBattleFieldWidth()-wallAvoid)
-                            pt.setLocation(pt.getX()-20, pt.getY());
-                        if(pt.getY()<=10)
-                            pt.setLocation(pt.getY(), wallAvoid);
-                        else if(pt.getY()>=getBattleFieldHeight()-wallAvoid)
-                            pt.setLocation(pt.getX(), pt.getY()-20);
-                        if (area.contains(pt) && risk(pt)<=risk(next))//find the risk of different points, if there's a good new point, then move there
-                        {
-                            next = pt; //next equals calculated risk next point
-                        }
-                        moveAngle += .1;
-                    } while(moveAngle < Math.PI*2);
-				turn = angle(next, location)-getHeadingRadians(); 
-				if (Math.cos(turn) < 0 || getX()<=10 || getY()<=10 || getX()>=getBattleFieldWidth()-10 || getY()>=getBattleFieldHeight()-10)
+				if(target!=null)
 				{
-					turn += Math.PI;
-					distance = -distance;
+					distance = Math.sqrt(location.distance(target.getLoc())); //distance to target
+					pt = projectPoint(location, moveAngle, Math.max(distance/2, 100));
+					if(pt.getX()<=10)
+						pt.setLocation(30, pt.getY());
+					else if(pt.getX()>=getBattleFieldWidth()-10)
+						pt.setLocation(pt.getX()-20, pt.getY());
+					if(pt.getY()<=10)
+						pt.setLocation(pt.getY(), 30);
+					else if(pt.getY()>=getBattleFieldHeight()-10)
+						pt.setLocation(pt.getX(), pt.getY()-20);
+					if (area.contains(pt) && risk(pt)<=risk(next))//find the risk of different points, if there's a good new point, then move there
+					{
+						next = pt; //next equals calculated risk next point
+					}
 				}
-				setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(turn));						
-				setAhead(distance);
-				if(Math.abs(getTurnRemainingRadians()) > 1 && getGunHeat()==0) //we will waste a turn if the gun goes off when gun heat is not zero
-	 			{
-	 				setFire(1); //setAhead(0);
-	 			}
+				moveAngle += .1;
+			} while(moveAngle < MAXRADS);
+			turn = angle(next, location)-getHeadingRadians(); 
+			if (Math.cos(turn) < 0 || getX()==0 || getY()==0 || getX()==getBattleFieldWidth() || getY()==getBattleFieldHeight())
+			{
+				turn += Math.PI;
+				distance = -distance;
 			}
+			setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(turn));						
+			setAhead(distance);
+			if(Math.abs(getTurnRemainingRadians()) > 1 && getGunHeat()==0) //we will waste a turn if the gun goes off when gun heat is not zero
+ 			{
+ 				setFire(1); //setAhead(0);
+ 			}
+			location = new Point2D.Double(getX(), getY());
 			execute();
 		} while(true);
-	}
+	}	
 	
 		public double risk(Point2D.Double point)
 	{
@@ -91,7 +92,8 @@ public class Name extends AdvancedRobot
 	
 	public void onScannedRobot(ScannedRobotEvent e)
 	{
-		//super tracker method from robowiki by CrazyBassoonist, http://robowiki.net/wiki/SuperTracker
+		
+
 		double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
 		double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
 		double gunTurnAmt;//amount to turn our gun
@@ -112,7 +114,7 @@ public class Name extends AdvancedRobot
 			setTurnLeft(-90-e.getBearing()); //turn perpendicular to the enemy
 			setAhead((e.getDistance() - 140)*moveDirection);//move forward
 			setFire(3);//fire
-			}
+		}	
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
