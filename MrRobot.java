@@ -12,6 +12,7 @@ public class Name extends AdvancedRobot
 	static Enemy target;
 	static double direction;
 	static final double MAXRADS = Math.PI*2;
+	int moveDirection = 1;
 	
 		public void run()
 	{
