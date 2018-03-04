@@ -59,9 +59,9 @@ public class Name extends AdvancedRobot
 	
 	public double risk(Point2D.Double point)
 	{
-		double riskVal = location.distance(point); //greater risk at further away, zero risk when point given is current location
+		double riskVal = 1;//location.distance(point); //greater risk at further away, zero risk when point given is current location
 		if(getEnergy()<50 && (point.getX()<=0 || point.getY()<=0 || point.getX()>=getBattleFieldWidth() || point.getY()>=getBattleFieldHeight()))
-			return 100; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
+			return 1000; //hit a wall, risk is 100% at less than 50 HP because AdvRobots get dmg'd on wall hit
 		Enemy closest = null; 
 		Point2D.Double riskPoint = point;
 		riskVal *= enemies.size(); //higher risk when more enemies on field
@@ -77,7 +77,7 @@ public class Name extends AdvancedRobot
 			if(!riskPoint.equals(point)) //if the closest enemy is not the current point projected
 			{
 				riskVal -= location.distance(closest.getLoc()); //subtract the distance of the closest robot because we WANT to move there if melee'ing
-				riskVal = Math.max(riskVal, 50);
+				riskVal = Math.min(riskVal, 40);
 			}	
 		return riskVal;	
 	}
@@ -95,6 +95,15 @@ public class Name extends AdvancedRobot
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
+	{
+		turnGunRight(getHeadingRadians()+e.getBearing());
+		if(getTurnRemainingRadians() < 1) 
+			fire(3);
+		double dir = getHeadingRadians()+e.getBearingRadians();	
+		next = projectPoint(location, dir+Math.PI/2, 100);
+	}
+	
+	public void onHitRobot(HitRobotEvent e)
 	{
 		double dir = getHeadingRadians()+e.getBearingRadians();	
 		next = projectPoint(location, dir+Math.PI/2, 100);
