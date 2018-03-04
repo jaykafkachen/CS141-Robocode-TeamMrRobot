@@ -41,7 +41,7 @@ public class Name extends AdvancedRobot
 						pt.setLocation(pt.getY(), 30);
 					else if(pt.getY()>=getBattleFieldHeight()-10)
 						pt.setLocation(pt.getX(), pt.getY()-20);
-					if (area.contains(pt) && risk(pt)<risk(next))//find the risk of different points, if there's a good new point, then move there
+					if (area.contains(pt) && risk(pt)<=risk(next))//find the risk of different points, if there's a good new point, then move there
 					{
 						next = pt; //next equals calculated risk next point
 					}
@@ -49,7 +49,7 @@ public class Name extends AdvancedRobot
 				moveAngle += .1;
 			} while(moveAngle < MAXRADS);
 			turn = angle(next, location)-getHeadingRadians(); 
-			if (Math.cos(turn) < 0)
+			if (Math.cos(turn) < 0 || getX()==0 || getY()==0 || getX()==getBattleFieldWidth() || getY()==getBattleFieldHeight())
 			{
 				turn += Math.PI;
 				distance = -distance;
@@ -120,7 +120,15 @@ public class Name extends AdvancedRobot
 	
 	public void onHitWall(HitWallEvent e) 
 	{
-		
+		double dir = getHeadingRadians()-e.getBearingRadians();	
+		next = projectPoint(location, dir+Math.PI/2, 100);
+		double turn = angle(next, location)-getHeadingRadians(); 
+		if (Math.cos(turn) < 0)
+			{
+				turn += Math.PI;
+			}
+			setTurnRightRadians(robocode.util.Utils.normalRelativeAngle(turn));						
+			setAhead(50);
 	}
 	
 	public void onRobotDeath(RobotDeathEvent e)
