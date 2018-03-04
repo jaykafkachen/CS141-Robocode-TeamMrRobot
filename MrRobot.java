@@ -46,7 +46,7 @@ public class Name extends AdvancedRobot
 						next = pt; //next equals calculated risk next point
 					}
 				}
-				moveAngle += 1;
+				moveAngle += .1;
 			} while(moveAngle < MAXRADS);
 			turn = angle(next, location)-getHeadingRadians(); 
 			if (Math.cos(turn) < 0)
@@ -102,23 +102,12 @@ public class Name extends AdvancedRobot
 		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
 		if(en.equals(target))
 		{
-			double angleToEnemy = getHeadingRadians() + e.getBearingRadians();
-			double radarTurn = Utils.normalRelativeAngle( angleToEnemy - getRadarHeadingRadians() );
-    			double extraTurn = Math.min( Math.atan( 36.0 / e.getDistance() ), Rules.RADAR_TURN_RATE_RADIANS );
-  			if (radarTurn < 0)
-        			radarTurn -= extraTurn;
-    			else
-        			radarTurn += extraTurn;
- 			setTurnRadarRightRadians(radarTurn);
-			setFire(1);
+			//do something to target enemy here
 		}
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
 	{
-		turnGunRight(getHeadingRadians()+e.getBearing());
-		if(getTurnRemainingRadians() < 1) 
-			fire(3);
 		double dir = getHeadingRadians()+e.getBearingRadians();	
 		next = projectPoint(location, dir+Math.PI/2, 100);
 	}
@@ -129,15 +118,23 @@ public class Name extends AdvancedRobot
 		next = projectPoint(location, dir+Math.PI/2, 100);
 	}
 	
-	public void onHitWall(HitWallEvent event) 
+	public void onHitWall(HitWallEvent e) 
 	{
-		turnRight(Math.PI-getHeadingRadians());
-		ahead(50);
+		
 	}
 	
 	public void onRobotDeath(RobotDeathEvent e)
 	{
 		enemies.remove(e.getName());
+		Enemy newtarget = new Enemy(new Point2D.Double(1000,1000),100);
+		for (Enemy enemyLoc : enemies.values()) //loop through and find if there is an enemy closer than the point given, will be fast bc 2 or less enemies only
+			{
+    			if(location.distance(newtarget.getLoc())>location.distance(enemyLoc.getLoc())) //if the last enemy's location is farther than the next enemy
+				{
+					newtarget = enemyLoc; //set this enemy to be the closest
+				}
+			}
+		target = newtarget;
 		
 	}
 	
