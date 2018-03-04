@@ -100,6 +100,18 @@ public class Name extends AdvancedRobot
 		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
 			target = en;
 		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
+		if(en.equals(target))
+		{
+			double angleToEnemy = getHeadingRadians() + e.getBearingRadians();
+			double radarTurn = Utils.normalRelativeAngle( angleToEnemy - getRadarHeadingRadians() );
+    			double extraTurn = Math.min( Math.atan( 36.0 / e.getDistance() ), Rules.RADAR_TURN_RATE_RADIANS );
+  			if (radarTurn < 0)
+        			radarTurn -= extraTurn;
+    			else
+        			radarTurn += extraTurn;
+ 			setTurnRadarRightRadians(radarTurn);
+			setFire(1);
+		}
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
@@ -126,6 +138,7 @@ public class Name extends AdvancedRobot
 	public void onRobotDeath(RobotDeathEvent e)
 	{
 		enemies.remove(e.getName());
+		
 	}
 	
 /*
@@ -173,5 +186,10 @@ public class Name extends AdvancedRobot
 		
 		public Point2D.Double getLoc()
 		{ return loc;}
+		
+		public boolean equals(Enemy e)
+		{
+			return (this.loc.equals(e.loc) && this.energy==e.energy);
+		} 
 	}
 }
