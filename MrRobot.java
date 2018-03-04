@@ -13,6 +13,7 @@ public class Name extends AdvancedRobot
 	static double direction;
 	static final double MAXRADS = Math.PI*2;
 	int moveDirection = 1;
+	int wallAvoid = 30;
 	
 		public void run()
 	{
@@ -111,6 +112,7 @@ public class Name extends AdvancedRobot
 			setTurnLeft(-90-e.getBearing()); //turn perpendicular to the enemy
 			setAhead((e.getDistance() - 140)*moveDirection);//move forward
 			setFire(3);//fire
+			}
 	}
 	
 	public void onHitByBullet(HitByBulletEvent e)
