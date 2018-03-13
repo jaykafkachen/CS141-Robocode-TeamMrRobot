@@ -92,8 +92,15 @@ public void run()
 	
 	public void onScannedRobot(ScannedRobotEvent e)
 	{
-		
-
+		String name = e.getName();
+		double enemyX = (location.getX() + Math.sin(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+       		double enemyY = (location.getY() + Math.cos(getHeadingRadians() + e.getBearingRadians()) * e.getDistance());
+		Point2D.Double enemyLoc = new Point2D.Double(enemyX, enemyY); ;// point2D w calculated location of enemy based on distance + bearing/heading 
+		Enemy en = new Enemy(enemyLoc, e.getEnergy());
+		if(target==null || target.getE()>en.getE()) //if we dont have a target or the target is not the weakest/only enemy on the field, target this enemy
+			target = en;
+		enemies.put(name, en); //note here that put() will replace the previous Enemy (location/energy storage object) if the enemy is already in the hashmap
+	
 		double absBearing=e.getBearingRadians()+getHeadingRadians();//enemies absolute bearing
 		double latVel=e.getVelocity() * Math.sin(e.getHeadingRadians() -absBearing);//enemies later velocity
 		double gunTurnAmt;//amount to turn our gun
